@@ -1,0 +1,12 @@
+---
+title: "FoodInsecurity"
+output: pdf_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("readxl")
+```
+```{r}
+food <- data.read
+```
+
