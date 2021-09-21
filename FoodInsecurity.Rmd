@@ -4,10 +4,9 @@ output: pdf_document
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library("readxl")
 ```
 ```{r}
-data <- read.delim("./food.dat")
+food <- read.delim("./food.dat",sep=".")
 ```
 ```{r}
 food
