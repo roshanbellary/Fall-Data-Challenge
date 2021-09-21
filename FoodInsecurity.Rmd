@@ -7,6 +7,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library("readxl")
 ```
 ```{r}
-food <- data.read
+food <- read_excel("./food.xlsx")
 ```
-
+```{r}
+food
+```
