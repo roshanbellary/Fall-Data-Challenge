@@ -70,17 +70,6 @@ ditch_the_axes <- theme(
 grapher <- ca_base+ geom_polygon(data=graph_county,aes(fill=ratio),color="white")+ labs(fill = "Percentages")+geom_polygon(color="black",fill=NA)+ditch_the_axes
 grapher
 ```
-```{r}
-anova_food <- food_ca
-anova_food[anova_food=="NULL"] <- "0"
-select(anova_food, -c(CensusTract,State,County))
-```
-
-```{r}
-anova <- aov(TractSNAP~TractBlack+TractAsian+TractHispanic+PovertyRate+	
-lakids1+lalowi1+LALOWI1_10,data=anova_food)
-summary(anova)
-```
 
 ```{r}
 food_ny <- read_excel("food.xlsx",sheet="NY")
@@ -117,3 +106,5 @@ ditch_the_axes <- theme(
 grapher <- ny_base+ geom_polygon(data=graph_county,aes(fill=ratio),color="white")+ labs(fill = "Percentages")+geom_polygon(color="black",fill=NA)+ditch_the_axes
 grapher
 ```
+
+
