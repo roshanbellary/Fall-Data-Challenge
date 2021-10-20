@@ -108,3 +108,10 @@ grapher
 ```
 
 
+Starting LASSO and Anova Model:
+
+```{r}
+lasso_first <- lm(TractSNAP~LowIncomeTracts+PovertyRate+MedianFamilyIncome+lapop10share+
+lasnap10share,data=food_ca)
+summary(lasso_first)
+```
