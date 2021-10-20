@@ -3,11 +3,117 @@ title: "FoodInsecurity"
 output: pdf_document
 ---
 ```{r setup, include=FALSE}
+install.packages("readxl")
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("tidyverse")
 knitr::opts_chunk$set(echo = TRUE)
+library("readxl")
+library("dplyr")
+library("ggplot2")
+library("tidyverse")
+```
+Getting the pages of variables:
+```{r}
+variables <- read_excel("food.xlsx",sheet=2)
 ```
 ```{r}
-food <- read.delim("./food.dat",sep=".")
+variables
+```
+Loading California data:
+```{r}
+food_ca <- read_excel("food.xlsx",sheet="CA")
+food_ca
+```
+
+Selecting specific rows in data:
+```{r}
+food_filter <- food_ca %>% select(State, County, TractSNAP,Pop2010)
+food_filter
+```
+
+Finding Food Stamp Percentages per each county:
+```{r}
+states <- map_data("state")
+counties <- map_data("county")
+ca_county <- subset(counties, region == "california")
+names(food_filter) <- c("State","subregion","TractSNAP","pop","ratio") 
+food_filter$subregion <- tolower(food_filter$subregion)
+food_filter <- food_filter %>% group_by(subregion)
+food_filter <- aggregate(cbind(TractSNAP,pop)~subregion, data=food_filter, FUN=sum)
+food_filter$ratio=food_filter$TractSNAP/food_filter$pop
+food_filter
+```
+
+Selecting and joining the downloaded California population data with food stamp data
+```{r}
+food_filter <- food_filter %>% select(subregion,ratio)
+food_filter$subregion = str_remove(food_filter$subregion," county")
+graph_county <- inner_join(ca_county,food_filter,by="subregion")
+graph_county
+```
+
+Creating graph of Californian counties with food stamp percentages:
+```{r}
+ca_df <- subset(states, region == "california")
+ca_base <- ggplot(data = ca_df, mapping = aes(x = long, y = lat, group = group)) + 
+  coord_fixed(1.3) + 
+  geom_polygon(color = "black", fill = "gray")+ggtitle("Percentage of People on Food Stamps In Each County")
+ditch_the_axes <- theme(
+  axis.text = element_blank(),
+  axis.line = element_blank(),
+  axis.ticks = element_blank(),
+  panel.border = element_blank(),
+  panel.grid = element_blank(),
+  axis.title = element_blank()
+  )
+grapher <- ca_base+ geom_polygon(data=graph_county,aes(fill=ratio),color="white")+ labs(fill = "Percentages")+geom_polygon(color="black",fill=NA)+ditch_the_axes
+grapher
 ```
 ```{r}
-food
+anova_food <- food_ca
+anova_food[anova_food=="NULL"] <- "0"
+select(anova_food, -c(CensusTract,State,County))
+```
+
+```{r}
+anova <- aov(TractSNAP~TractBlack+TractAsian+TractHispanic+PovertyRate+	
+lakids1+lalowi1+LALOWI1_10,data=anova_food)
+summary(anova)
+```
+
+```{r}
+food_ny <- read_excel("food.xlsx",sheet="NY")
+```
+```{r}
+food_filter <- food_ny %>% select(State, County, TractSNAP,Pop2010)
+states <- map_data("state")
+counties <- map_data("county")
+ny_county <- subset(counties, region == "new york")
+names(food_filter) <- c("State","subregion","TractSNAP","pop","ratio") 
+food_filter$subregion <- tolower(food_filter$subregion)
+food_filter <- food_filter %>% group_by(subregion)
+food_filter <- aggregate(cbind(TractSNAP,pop)~subregion, data=food_filter, FUN=sum)
+food_filter$ratio=food_filter$TractSNAP/food_filter$pop
+food_filter <- food_filter %>% select(subregion,ratio)
+food_filter$subregion = str_remove(food_filter$subregion," county")
+graph_county <- inner_join(ny_county,food_filter,by="subregion")
+graph_county
+```
+
+```{r}
+ny_df <- subset(states, region == "new york")
+ny_base <- ggplot(data = ny_df, mapping = aes(x = long, y = lat, group = group)) + 
+  coord_fixed(1.3) + 
+  geom_polygon(color = "black", fill = "gray")+ggtitle("Percentage of People on Food Stamps In NY Counties")
+ditch_the_axes <- theme(
+  axis.text = element_blank(),
+  axis.line = element_blank(),
+  axis.ticks = element_blank(),
+  panel.border = element_blank(),
+  panel.grid = element_blank(),
+  axis.title = element_blank()
+  )
+grapher <- ny_base+ geom_polygon(data=graph_county,aes(fill=ratio),color="white")+ labs(fill = "Percentages")+geom_polygon(color="black",fill=NA)+ditch_the_axes
+grapher
 ```
