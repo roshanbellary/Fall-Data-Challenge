@@ -107,7 +107,7 @@ grapher
 ```
 
 
-Starting LASSO and Anova Model:
+Starting LASSO and Anova Model and Cleaning Data:
 
 ```{r}
 food_ca <- read_excel("food.xlsx",sheet="CA")
