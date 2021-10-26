@@ -29,7 +29,6 @@ food_ca
 Selecting specific rows in data:
 ```{r}
 food_filter <- food_ca %>% select(State, County, TractSNAP,Pop2010)
-food_filter
 ```
 
 Finding Food Stamp Percentages per each county:
@@ -111,7 +110,25 @@ grapher
 Starting LASSO and Anova Model:
 
 ```{r}
-lasso_first <- lm(TractSNAP~LowIncomeTracts+PovertyRate+MedianFamilyIncome+lapop10share+
-lasnap10share,data=food_ca)
-summary(lasso_first)
+food_ca <- read_excel("food.xlsx",sheet="CA")
+rcols <- c()
+for (i in 1:ncol(food_ca)){
+  if (any(is.na(food_ca[,i]))){
+    rcols <- append(rcols,i)
+  }
+}
+food_ca <- food_ca[-rcols]
+for (i in 1:ncol(food_ca)){
+  if (any(food_ca[,i]=='NULL')){
+    rcols <- append(rcols,i)
+  }
+}
+rcols
+food_ca <- food_ca[-rcols]
+food_ca
+```
+
+```{r}
+lasso_ca<-lm(formula=TractSNAP~Pop2010+Urban+PovertyRate+LowIncomeTracts+TractLOWI,TractBlack+TractAsian+TractWhite,data=food_ca)
+summary(lasso_ca)
 ```
