@@ -129,6 +129,6 @@ food_ca
 ```
 
 ```{r}
-lasso_ca<-lm(formula=TractSNAP~Pop2010+Urban+PovertyRate+LowIncomeTracts+TractLOWI,TractBlack+TractAsian+TractWhite,data=food_ca)
+lasso_ca<-lm(formula=TractSNAP~Pop2010+LowIncomeTracts+PovertyRate+LA1and10+LATracts1+LATracts10+TractLOWI+TractKids+TractSeniors+TractWhite+TractBlack+TractAsian+TractNHOPI+TractAIAN+TractOMultir+TractHispanic+TractHUNV,data=food_ca)
 summary(lasso_ca)
 ```
