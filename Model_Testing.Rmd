@@ -1,0 +1,115 @@
+---
+title: "Model_Testing"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+install.packages("readxl")
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("tidyverse")
+knitr::opts_chunk$set(echo = TRUE)
+library("readxl")
+library("dplyr")
+library("ggplot2")
+library("tidyverse")
+```
+Reading data from datasheets:
+```{r}
+abbrev = c('AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'WA', 'WV', 'WI', 'WY')
+df1 = read_excel("food.xlsx","AL")
+df2 = read_excel("food.xlsx","AK")
+df3 = read_excel("food.xlsx","AZ")
+df4 = read_excel("food.xlsx","AR")
+df5 = read_excel("food.xlsx","CA")
+df6 = read_excel("food.xlsx","CO")
+df7 = read_excel("food.xlsx","CT")
+df8 = read_excel("food.xlsx","DE")
+df9 = read_excel("food.xlsx","DC")
+df10 = read_excel("food.xlsx","FL")
+df11 = read_excel("food.xlsx","GA")
+df12 = read_excel("food.xlsx","HI")
+df13 = read_excel("food.xlsx","ID")
+df14 = read_excel("food.xlsx","IL")
+df15 = read_excel("food.xlsx","IN")
+df16 = read_excel("food.xlsx","IA")
+df17 = read_excel("food.xlsx","KS")
+df18 = read_excel("food.xlsx","KY")
+df19 = read_excel("food.xlsx","LA")
+df20 = read_excel("food.xlsx","ME")
+df21 = read_excel("food.xlsx","MD")
+df22 = read_excel("food.xlsx","MA")
+df23 = read_excel("food.xlsx","MI")
+df24 = read_excel("food.xlsx","MN")
+df25 = read_excel("food.xlsx","MS")
+df26 = read_excel("food.xlsx","MO")
+df27 = read_excel("food.xlsx","MT")
+df28 = read_excel("food.xlsx","NE")
+df29 = read_excel("food.xlsx","NV")
+df30 = read_excel("food.xlsx","NH")
+df31 = read_excel("food.xlsx","NJ")
+df32 = read_excel("food.xlsx","NM")
+df33 = read_excel("food.xlsx","NY")
+df34 = read_excel("food.xlsx","NC")
+df35 = read_excel("food.xlsx","ND")
+df36 = read_excel("food.xlsx","OH")
+df37 = read_excel("food.xlsx","OK")
+df38 = read_excel("food.xlsx","OR")
+df39 = read_excel("food.xlsx","PA")
+df40 = read_excel("food.xlsx","RI")
+df41 = read_excel("food.xlsx","SC")
+df42 = read_excel("food.xlsx","SD")
+df43 = read_excel("food.xlsx","TN")
+df44 = read_excel("food.xlsx","TX")
+df45 = read_excel("food.xlsx","UT")
+df46 = read_excel("food.xlsx","VT")
+df47 = read_excel("food.xlsx","WA")
+df48 = read_excel("food.xlsx","WV")
+df49 = read_excel("food.xlsx","WI")
+df50 = read_excel("food.xlsx","WY")
+food = list("AL"=df1,"AK"=df2,"AZ"=df3,"AR"=df4,"CA"=df5,"CO"=df6,"CT"=df7,"DE"=df8,"DC"=df9,"FL"=df10,"GA"=df11,"HI"=df12,"ID"=df13,"IL"=df14,"IN"=df15,"IA"=df16,"KS"=df17,"KY"=df18,"LA"=df19,"ME"=df20,"MD"=df21,"MA"=df22,"MI"=df23,"MN"=df24,"MS"=df25,"MO"=df26,"MT"=df27,"NE"=df28,"NV"=df29,"NH"=df30,"NJ"=df31,"NM"=df32,"NY"=df33,"NC"=df34,"ND"=df35,"OH"=df36,"OK"=df37,"OR"=df38,"PA"=df39,"RI"=df40,"SC"=df41,"SD"=df42,"TN"=df43,"TX"=df44,"UT"=df45,"VT"=df46,"WA"=df47,"WV"=df48,"WI"=df49,"WY"=df50)
+```
+
+Checking to see if any states have NULL values for any of the variables(if yes then we do not consider them):
+```{r}
+vars <- c("TractSNAP","TractLOWI","TractKids","TractSeniors","PovertyRate","TractAsian","TractNHOPI","TractAIAN","TractHispanic","TractHUNV","TractBlack","TractWhite")
+useless <- c()
+for (i in 1:length(abbrev)){
+  for (var in vars){
+    if (any(food[abbrev[i]]$var=="NULL")){
+      useless <- append(useless,i)
+    }
+    if (any(is.null(food[abbrev[i]]$var))){
+      useless <- append(useless,i)
+    }
+  }
+}
+useless
+```
+
+
+None of the states have null values for the variables in the model!
+
+Now we can use our model from California to predict other state values
+```{r}
+food["NY"]
+```
+Making Linear Model:
+```{r}
+nreg_ca<-lm(TractSNAP~TractLOWI+TractKids+TractSeniors+PovertyRate+TractAsian+TractNHOPI+TractAIAN+TractHispanic+TractHUNV+TractBlack+TractWhite,data=food$CA)
+summary(nreg_ca)
+```
+
+Using model to test on data of remaining states and seeing accuracy:
+```{r}
+pred <- predict(nreg_ca,food$NY)-food$NY$TractSNAP
+boxplot(pred,
+main = "Distribution of residuals in predictions from regression",
+xlab = "Difference in # of food stamps in census tract",
+col = "orange",
+border = "brown",
+horizontal = TRUE,
+notch = TRUE
+)
+```

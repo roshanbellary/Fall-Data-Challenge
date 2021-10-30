@@ -129,6 +129,8 @@ food_ca
 ```
 
 ```{r}
-lasso_ca<-lm(formula=TractSNAP~Pop2010+LowIncomeTracts+PovertyRate+LA1and10+LATracts1+LATracts10+TractLOWI+TractKids+TractSeniors+TractWhite+TractBlack+TractAsian+TractNHOPI+TractAIAN+TractOMultir+TractHispanic+TractHUNV,data=food_ca)
-summary(lasso_ca)
+reg_ca<-lm(formula=TractSNAP~Pop2010+LowIncomeTracts+PovertyRate+LA1and10+LATracts1+LATracts10+TractLOWI+TractKids+TractSeniors+TractWhite+TractBlack+TractAsian+TractNHOPI+TractAIAN+TractOMultir+TractHispanic+TractHUNV,data=food_ca)
+summary(reg_ca)
+nreg_ca<-lm(formula=TractSNAP~TractLOWI+TractKids+TractSeniors+PovertyRate+TractAsian+TractNHOPI+TractAIAN+TractHispanic+TractHUNV+TractBlack+TractWhite,data=food_ca)
+summary(nreg_ca)
 ```
