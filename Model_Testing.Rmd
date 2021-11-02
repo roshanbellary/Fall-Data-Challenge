@@ -61,7 +61,7 @@ df40 = read_excel("food.xlsx","RI")
 df41 = read_excel("food.xlsx","SC")
 df42 = read_excel("food.xlsx","SD")
 df43 = read_excel("food.xlsx","TN")
-df44 = read_excel("food.xlsx","TX")
+df44 = read_excel("food.xlsx","TS")
 df45 = read_excel("food.xlsx","UT")
 df46 = read_excel("food.xlsx","VT")
 df47 = read_excel("food.xlsx","WA")
@@ -74,42 +74,43 @@ food = list("AL"=df1,"AK"=df2,"AZ"=df3,"AR"=df4,"CA"=df5,"CO"=df6,"CT"=df7,"DE"=
 Checking to see if any states have NULL values for any of the variables(if yes then we do not consider them):
 ```{r}
 vars <- c("TractSNAP","TractLOWI","TractKids","TractSeniors","PovertyRate","TractAsian","TractNHOPI","TractAIAN","TractHispanic","TractHUNV","TractBlack","TractWhite")
-useless <- c()
-for (i in 1:length(abbrev)){
-  for (var in vars){
-    if (any(food[abbrev[i]]$var=="NULL")){
-      useless <- append(useless,i)
-    }
-    if (any(is.null(food[abbrev[i]]$var))){
-      useless <- append(useless,i)
-    }
-  }
-}
-useless
+useless <- c(2,42,44)
+useful <- c(1:50)
+useful<-useful[-useless]
+useful
 ```
 
 
-None of the states have null values for the variables in the model!
+Only Alaska, South Dakota and Texas are unable to be used in the data due to either NULL values for some of our model variables or the non-existence of some of our model variables
 
 Now we can use our model from California to predict other state values
-```{r}
-food["NY"]
-```
+
 Making Linear Model:
 ```{r}
-nreg_ca<-lm(TractSNAP~TractLOWI+TractKids+TractSeniors+PovertyRate+TractAsian+TractNHOPI+TractAIAN+TractHispanic+TractHUNV+TractBlack+TractWhite,data=food$CA)
-summary(nreg_ca)
+vars <- c("TractSNAP","Pop2010","LowIncomeTracts","PovertyRate","LA1and10","LATracts1","TractLOWI ","TractKids","TractSeniors","TractWhite","TractBlack","TractAsian", "TractNHOPI", 
+    "TractAIAN","TractOMultir", "TractHispanic", "TractHUNV")
+food_data <- rbind(food$CA,food$NY,food$KS)
+rcols <- c()
+for (i in 1:ncol(food_data)){
+  if (any(is.na(food_data[,i]))){
+    rcols <- append(rcols,i)
+  }
+}
+food_data <- food_data[-rcols]
+for (i in 1:ncol(food_data)){
+  if (any(food_data[,i]=='NULL')){
+    rcols <- append(rcols,i)
+  }
+}
+food_data <- food_data[-rcols]
+nreg_f<-lm(formula=TractSNAP~TractLOWI+TractKids+TractSeniors+PovertyRate+TractAsian+TractNHOPI+TractAIAN+TractHispanic+TractHUNV+TractBlack+TractWhite,data=food_data)
+summary(nreg_f)
+nreg_f$terms
 ```
 
-Using model to test on data of remaining states and seeing accuracy:
+Making error percentages for each State's counties
 ```{r}
-pred <- predict(nreg_ca,food$NY)-food$NY$TractSNAP
-boxplot(pred,
-main = "Distribution of residuals in predictions from regression",
-xlab = "Difference in # of food stamps in census tract",
-col = "orange",
-border = "brown",
-horizontal = TRUE,
-notch = TRUE
-)
+for (i in useful){
+  food[[i]]$ERR <- (predict(nreg_f,food[[i]])-food[[i]]$TractSNAP)/(food[[i]]$TractSNAP)
+}
 ```
