@@ -114,3 +114,7 @@ for (i in useful){
   food[[i]]$ERR <- (predict(nreg_f,food[[i]])-food[[i]]$TractSNAP)/(food[[i]]$TractSNAP)
 }
 ```
+Boxplot test of data:
+```{r}
+boxplot(food[[1]]$ERR)
+```
