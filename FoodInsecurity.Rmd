@@ -113,10 +113,9 @@ Starting LASSO and Anova Model and Cleaning Data:
 food_ca <- read_excel("food.xlsx",sheet="CA")
 food_ny <- read_excel("food.xlsx",sheet="NY")
 food_ks <- read_excel("food.xlsx",sheet="KS")
-food_tx <- read_excel("food.xlsx",sheet="TX")
 vars <- c("TractSNAP","Pop2010","LowIncomeTracts","PovertyRate","LA1and10","LATracts1","TractLOWI ","TractKids","TractSeniors","TractWhite","TractBlack","TractAsian", "TractNHOPI", 
     "TractAIAN","TractOMultir", "TractHispanic", "TractHUNV")
-food_data <- rbind(food_ca,food_ny,food_ks,food_tx)
+food_data <- rbind(food_ca,food_ny,food_ks)
 rcols <- c()
 for (i in 1:ncol(food_data)){
   if (any(is.na(food_data[,i]))){
