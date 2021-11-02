@@ -111,26 +111,32 @@ Starting LASSO and Anova Model and Cleaning Data:
 
 ```{r}
 food_ca <- read_excel("food.xlsx",sheet="CA")
+food_ny <- read_excel("food.xlsx",sheet="NY")
+food_ks <- read_excel("food.xlsx",sheet="KS")
+food_tx <- read_excel("food.xlsx",sheet="TX")
+vars <- c("TractSNAP","Pop2010","LowIncomeTracts","PovertyRate","LA1and10","LATracts1","TractLOWI ","TractKids","TractSeniors","TractWhite","TractBlack","TractAsian", "TractNHOPI", 
+    "TractAIAN","TractOMultir", "TractHispanic", "TractHUNV")
+food_data <- rbind(food_ca,food_ny,food_ks,food_tx)
 rcols <- c()
-for (i in 1:ncol(food_ca)){
-  if (any(is.na(food_ca[,i]))){
+for (i in 1:ncol(food_data)){
+  if (any(is.na(food_data[,i]))){
     rcols <- append(rcols,i)
   }
 }
-food_ca <- food_ca[-rcols]
-for (i in 1:ncol(food_ca)){
-  if (any(food_ca[,i]=='NULL')){
+food_data <- food_data[-rcols]
+for (i in 1:ncol(food_data)){
+  if (any(food_data[,i]=='NULL')){
     rcols <- append(rcols,i)
   }
 }
 rcols
-food_ca <- food_ca[-rcols]
-food_ca
+food_data <- food_data[-rcols]
+food_data
 ```
 
 ```{r}
-reg_ca<-lm(formula=TractSNAP~Pop2010+LowIncomeTracts+PovertyRate+LA1and10+LATracts1+LATracts10+TractLOWI+TractKids+TractSeniors+TractWhite+TractBlack+TractAsian+TractNHOPI+TractAIAN+TractOMultir+TractHispanic+TractHUNV,data=food_ca)
-summary(reg_ca)
-nreg_ca<-lm(formula=TractSNAP~TractLOWI+TractKids+TractSeniors+PovertyRate+TractAsian+TractNHOPI+TractAIAN+TractHispanic+TractHUNV+TractBlack+TractWhite,data=food_ca)
-summary(nreg_ca)
+reg_f<-lm(formula=TractSNAP~Pop2010+LowIncomeTracts+PovertyRate+LA1and10+LATracts1+LATracts10+TractLOWI+TractKids+TractSeniors+TractWhite+TractBlack+TractAsian+TractNHOPI+TractAIAN+TractOMultir+TractHispanic+TractHUNV,data=food_data)
+summary(reg_f)
+nreg_f<-lm(formula=TractSNAP~TractLOWI+TractKids+TractSeniors+PovertyRate+TractAsian+TractNHOPI+TractAIAN+TractHispanic+TractHUNV+TractBlack+TractWhite,data=food_data)
+summary(nreg_f)
 ```
