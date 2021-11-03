@@ -88,7 +88,7 @@ Now we can use our model from California to predict other state values
 Making Linear Model:
 ```{r}
 vars <- c("TractSNAP","Pop2010","LowIncomeTracts","PovertyRate","LA1and10","LATracts1","TractLOWI ","TractKids","TractSeniors","TractWhite","TractBlack","TractAsian", "TractNHOPI", 
-    "TractAIAN","TractOMultir", "TractHispanic", "TractHUNV")
+    "TractAIAN","TractOMultir", "TractHispanic", "TractHUNV","State","County")
 food_data <- rbind(food$CA,food$NY,food$KS)
 rcols <- c()
 for (i in 1:ncol(food_data)){
@@ -116,5 +116,11 @@ for (i in useful){
 ```
 Boxplot test of data:
 ```{r}
-boxplot(food[[1]]$ERR)
+food_states <- food[[1]]
+for (states in useful){
+  if (states!=1){
+    food_states <- rbind(food_states, food[[states]],by=vars)
+  }
+}
+food_states
 ```
