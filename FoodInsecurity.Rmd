@@ -12,6 +12,7 @@ library("readxl")
 library("dplyr")
 library("ggplot2")
 library("tidyverse")
+library("scales")
 ```
 Getting the pages of variables:
 ```{r}
@@ -57,7 +58,7 @@ Creating graph of Californian counties with food stamp percentages:
 ca_df <- subset(states, region == "california")
 ca_base <- ggplot(data = ca_df, mapping = aes(x = long, y = lat, group = group)) + 
   coord_fixed(1.3) + 
-  geom_polygon(color = "black", fill = "gray")+ggtitle("Percentage of People on Food Stamps In Each County")
+  geom_polygon(color = "black", fill = "gray")
 ditch_the_axes <- theme(
   axis.text = element_blank(),
   axis.line = element_blank(),
@@ -66,7 +67,7 @@ ditch_the_axes <- theme(
   panel.grid = element_blank(),
   axis.title = element_blank()
   )
-grapher <- ca_base+ geom_polygon(data=graph_county,aes(fill=ratio),color="white")+ labs(fill = "Percentages")+geom_polygon(color="black",fill=NA)+ditch_the_axes
+grapher <- ca_base+ geom_polygon(data=graph_county,aes(fill=ratio),color="white")+ labs(fill = "Percentages")+geom_polygon(color="black",fill=NA)+scale_fill_gradient(low="lightblue",high="darkblue",limits = c(0,0.125),labels=percent)+ditch_the_axes+theme(panel.background = element_rect(fill = "white"))
 grapher
 ```
 
@@ -93,7 +94,7 @@ graph_county
 ny_df <- subset(states, region == "new york")
 ny_base <- ggplot(data = ny_df, mapping = aes(x = long, y = lat, group = group)) + 
   coord_fixed(1.3) + 
-  geom_polygon(color = "black", fill = "gray")+ggtitle("Percentage of People on Food Stamps In NY Counties")
+  geom_polygon(color = "black", fill = "gray")
 ditch_the_axes <- theme(
   axis.text = element_blank(),
   axis.line = element_blank(),
@@ -102,7 +103,7 @@ ditch_the_axes <- theme(
   panel.grid = element_blank(),
   axis.title = element_blank()
   )
-grapher <- ny_base+ geom_polygon(data=graph_county,aes(fill=ratio),color="white")+ labs(fill = "Percentages")+geom_polygon(color="black",fill=NA)+ditch_the_axes
+grapher <- ny_base+ geom_polygon(data=graph_county,aes(fill=ratio),color="white")+ labs(fill = "Percentages")+geom_polygon(color="black",fill=NA)+scale_fill_gradient(low="lightblue",high="darkblue",limits = c(0,0.125),labels=percent)+ditch_the_axes+ theme(panel.background = element_rect(fill = "white"))
 grapher
 ```
 
