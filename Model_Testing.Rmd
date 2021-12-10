@@ -178,3 +178,39 @@ grapher <- base+geom_polygon(data=graph_counties,aes(fill=PERR),color="white")+ 
 grapher
 
 ```
+
+```{r}
+ca_df <- subset(graph_counties, region == "california")
+ca_base <- subset(states, region == "california")
+base <- ggplot(data = ca_base, mapping = aes(x = long, y = lat, group = group)) + 
+  coord_fixed(1.3) + 
+  geom_polygon(color = "black", fill = "gray")
+ditch_the_axes <- theme(
+  axis.text = element_blank(),
+  axis.line = element_blank(),
+  axis.ticks = element_blank(),
+  panel.border = element_blank(),
+  panel.grid = element_blank(),
+  axis.title = element_blank()
+  )
+grapher <- base+geom_polygon(data=ca_df,aes(fill=PERR),color="white")+ labs(fill = "Percentages(%)")+scale_fill_gradient(low="lightblue",high="darkblue",labels=percent)+geom_polygon(color="black",fill=NA)+ditch_the_axes+ theme(panel.background = element_rect(fill = "white"))
+grapher
+```
+```{r}
+fl_df <- subset(graph_counties, region == "florida")
+fl_base <- subset(states, region == "florida")
+base <- ggplot(data = fl_base, mapping = aes(x = long, y = lat, group = group)) + 
+  coord_fixed(1.3) + 
+  geom_polygon(color = "black", fill = "gray")
+ditch_the_axes <- theme(
+  axis.text = element_blank(),
+  axis.line = element_blank(),
+  axis.ticks = element_blank(),
+  panel.border = element_blank(),
+  panel.grid = element_blank(),
+  axis.title = element_blank()
+  )
+grapher <- base+geom_polygon(data=fl_df,aes(fill=PERR),color="white")+ labs(fill = "Percentages(%)")+scale_fill_gradient(low="lightblue",high="darkblue",labels=percent)+geom_polygon(color="black",fill=NA)+ditch_the_axes+ theme(panel.background = element_rect(fill = "white"))
+grapher
+
+```
